@@ -1,7 +1,7 @@
 import json
 import tensorflow as tf
 from flask import Flask, request, jsonify, render_template
-from module.utils import load_config
+from utils import load_config
 
 app = Flask(__name__)
 

@@ -1,6 +1,6 @@
 import yaml
 import json
-from module.utils import init_logger, load_config
+from utils import init_logger, load_config
 from module.Preprocessor import Preprocessor
 from module.trainer import  Trainer
 

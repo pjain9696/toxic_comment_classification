@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.metrics import classification_report
 
 from module.model.lstm import LSTM
-from module.utils import customAuc
+from utils import customAuc
 
 class Trainer:
     def __init__(self, config, logger, classes, vocab_size, embedding_matrix) -> None:
