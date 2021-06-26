@@ -7,7 +7,7 @@ preprocessing:
   - insult
   - identity_hate
   dir_testdata: ./data/test.csv
-  dir_traindata: ./data/train_mini.csv
+  dir_traindata: ./data/train.csv
   dir_testlabels: ./data/test_labels.csv
   dir_tokenizer: ./data/tokenizer.json
   load_pretrained_embeddings_from_disk: False
@@ -19,4 +19,4 @@ nn_params:
     name: glove-840b-300d
     file_path: ./data/glove.840B.300d.txt
   sentence_maxlen: 200
-  num_tokens: 5000
+  num_tokens: 20000
