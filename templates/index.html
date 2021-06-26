@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ML API</title>
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <div class='login'>
+        <h1>Predict Toxicity of Comments</h1>
+
+        <!-- main input for receiving query to our ML model-->
+        <form action="{{url_for('predict')}}" method="POST">
+            <!-- <input type='text' name='comment' placeholder='write comment here' required='required'/> -->
+            <textarea name="comment" rows='3' cols='33' placeholder="write comment here" required='required'></textarea>
+            <br/>
+            <button type='submit' class='btn btn-primary btn-block btn-large'>Submit</button>
+        </form>
+        <br>
+        <pre>{{comment_text}}</pre>
+        <pre>{{prediction_text}}</pre>
+    </div>
+</body>
+</html>
