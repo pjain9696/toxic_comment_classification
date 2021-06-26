@@ -30,4 +30,4 @@ pip install -r requirements.txt
   
   * Update random_seed to maintain reproducibility of multiple experiments
 
-  * run main.py
+  * run [main.py](https://github.com/pjain9696/toxic_comment_classification/blob/master/main.py)
