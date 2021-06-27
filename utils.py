@@ -1,7 +1,8 @@
 import numpy as np
 import logging
 import yaml
-from sklearn.metrics import accuracy_score, roc_curve, auc
+from sklearn.metrics import accuracy_score, roc_curve, auc, roc_auc_score
+from tensorflow.keras.callbacks import Callback
 
 def init_logger(config):
     if config['preprocessing']['dir_traindata'] == './data/train.csv':
@@ -35,4 +36,17 @@ def customAuc(yActual, yPred):
 
     print('\nauc_score={}\noptimal_threshold={}\n'.format(auc_score, optimal_threshold))
     return auc_score, optimal_threshold
+
+class RocAucEvaluation(Callback):
+    def __init__(self, validation_data=(), interval=1):
+        super(Callback, self).__init__()
+
+        self.interval = interval
+        self.valid_x, self.valid_y = validation_data
+    
+    def on_epoch_end(self, epoch, logs={}):
+        if epoch % self.interval == 0:
+            y_pred = self.model.predict(self.valid_x, verbose=0)
+            score = roc_auc_score(self.valid_y, y_pred)
+            print('\n ROC-AUC - epoch: %d - score: %.6f\n' % (epoch+1, score))
 

@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.metrics import classification_report
 
-from module.model.lstm import LSTM
+from module.model.deep_model import deep_model
 from utils import customAuc
 
 class Trainer:
@@ -11,7 +11,7 @@ class Trainer:
         self.classes = classes
         self.vocab_size = vocab_size
         self.embedding_matrix = embedding_matrix
-        self.model = LSTM(self.classes, self.vocab_size, self.embedding_matrix, self.config['nn_params'], self.logger)
+        self.model = deep_model(self.classes, self.vocab_size, self.embedding_matrix, self.config['nn_params'], self.logger)
     
     def fit_and_validate(self, train_x, train_y, valid_x, valid_y):
         df_valid_y_pred_probs = self.model.fit_and_validate(train_x, train_y, valid_x, valid_y)

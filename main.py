@@ -1,3 +1,4 @@
+import numpy as np
 import yaml
 import json
 from utils import init_logger, load_config
@@ -25,7 +26,8 @@ if __name__ == "__main__":
 
     cls_report_dict = json.dumps(cls_report_dict, indent=2)
 
-    print('AUC Score per class: {}'.format(auc_dict))
     print('Classification Report per class: {}'.format(cls_report_dict))
+    print('AUC Score per class: {}'.format(auc_dict))
+    print('Mean AUC Score: {}'.format(np.mean(list(auc_dict.values()))))
     logger.info('AUC Score per class: {}'.format(auc_dict))
     logger.info('\nClassification Report per class: {}\n'.format(cls_report_dict))
