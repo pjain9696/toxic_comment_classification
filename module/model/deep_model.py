@@ -37,7 +37,7 @@ class deep_model(object):
         self.logger.info(model.summary())
         return model
     
-    def fit_and_validate(self, train_x, train_y, valid_x, valid_y):
+    def fit_and_validate(self, train_x, train_y, valid_x, valid_y, test_x, test_y):
         print('\n\nshape of train_x={}\nshape of train_y={}\n\n'.format(train_x.shape, train_y.shape))
 
         model_file = './data/model_{}_trainsize{}.h5'.format(self.model.name, len(train_x))
@@ -48,11 +48,11 @@ class deep_model(object):
             )        
             #save model for reproducibility
             self.model.save(model_file)  # creates a HDF5 file
-            df_pred_probs = self.predict_probs(self.model, valid_x)
+            df_pred_probs = self.predict_probs(self.model, test_x)
         else:
             print('\nloading a saved model from disk...\n')
             model = tf.keras.models.load_model(model_file)
-            df_pred_probs = self.predict_probs(model, valid_x)
+            df_pred_probs = self.predict_probs(model, test_x)
 
         return df_pred_probs
     

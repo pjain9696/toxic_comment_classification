@@ -13,10 +13,10 @@ class Trainer:
         self.embedding_matrix = embedding_matrix
         self.model = deep_model(self.classes, self.vocab_size, self.embedding_matrix, self.config['nn_params'], self.logger)
     
-    def fit_and_validate(self, train_x, train_y, valid_x, valid_y):
-        df_valid_y_pred_probs = self.model.fit_and_validate(train_x, train_y, valid_x, valid_y)
-        df_valid_y = pd.DataFrame(valid_y, columns=self.classes)
-        auc_list, cls_report_list = self.metrics(df_valid_y_pred_probs, df_valid_y)
+    def fit_and_validate(self, train_x, train_y, valid_x, valid_y, test_x, test_y):
+        df_test_y_pred_probs = self.model.fit_and_validate(train_x, train_y, valid_x, valid_y, test_x, test_y)
+        df_test_y = pd.DataFrame(test_y, columns=self.classes)
+        auc_list, cls_report_list = self.metrics(df_test_y_pred_probs, df_test_y)
         return self.model, auc_list, cls_report_list
     
     def metrics(self, df_pred_probs, df_true_labels):

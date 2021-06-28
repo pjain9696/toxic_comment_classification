@@ -13,7 +13,7 @@ preprocessing:
   load_pretrained_embeddings_from_disk: True
   random_seed: 42
 nn_params:
-  model_name: 'CnnPlusGru_v1'
+  model_name: 'gru'
   embedding_dim: 300
   epochs: 2
   pretrained_embedding: 

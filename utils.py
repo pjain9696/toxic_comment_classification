@@ -48,5 +48,5 @@ class RocAucEvaluation(Callback):
         if epoch % self.interval == 0:
             y_pred = self.model.predict(self.valid_x, verbose=0)
             score = roc_auc_score(self.valid_y, y_pred)
-            print('\n ROC-AUC - epoch: %d - score: %.6f\n' % (epoch+1, score))
+            print('\n ROC-AUC for Validation - epoch: %d - score: %.6f\n' % (epoch+1, score))
 
