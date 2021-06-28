@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     #preprocessing
     pp = Preprocessor(config, logger)
-    data_x, data_y, train_x, train_y, valid_x, valid_y, test_x, test_y = pp.prep_data(
+    train_x, train_y, valid_x, valid_y, test_x, test_y = pp.prep_data(
         load_pretrained_embeddings_from_disk=config['preprocessing']['load_pretrained_embeddings_from_disk']
     )
     print('\n\nfinished preparing data, shapes=\n')

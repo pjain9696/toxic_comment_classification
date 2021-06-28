@@ -2,12 +2,14 @@ import pandas as pd
 import numpy as np
 import os
 import io
+import re
 import json
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 from module.embedding import load_pretrained_embeddings
+from module.contractions import contractions_list
 
 class Preprocessor:
     def __init__(self, config, logger) -> None:
@@ -40,23 +42,41 @@ class Preprocessor:
         return
     
     def prep_data(self, load_pretrained_embeddings_from_disk=False):
-        prep_method = self.config.get('prep_method', None)
-
+        data_x = self.df_train.comment_text.to_numpy()
+        test_x = self.df_test.comment_text.to_numpy()
+        
         print('\npreprocessing inputs:\n')
-        data_x, test_x = self.nn_vectorization(load_pretrained_embeddings_from_disk=load_pretrained_embeddings_from_disk)        
+        data_x = self.expand_contractions(data_x)
+        test_x = self.expand_contractions(test_x)
+
+        train_x, train_y, valid_x, valid_y, test_x, test_y = self.nn_vectorization(data_x, test_x, 
+            load_pretrained_embeddings_from_disk=load_pretrained_embeddings_from_disk
+        )        
+        return train_x, train_y, valid_x, valid_y, test_x, test_y
+
+    def expand_contractions(self, data_x):
+        contractions = contractions_list()
+
+        #firstly expand specific contractions
+        specific_contractions = contractions['specific']
+        pattern = re.compile('|'.join(specific_contractions.keys()))
+        result = [pattern.sub(lambda x: specific_contractions[x.group()], comment) for comment in data_x]
+
+        #secondly expand general contractions
+        general_contractions = contractions['general']
+        pattern = re.compile('|'.join(general_contractions.keys()))
+        result = [pattern.sub(lambda x: general_contractions[x.group()], comment) for comment in result]
+        return result
+
+    def nn_vectorization(self, data_x, test_x, load_pretrained_embeddings_from_disk=False):
+        params = self.nn_params
+        
         data_y = self.df_train[self.classes]
         test_y = self.df_test_labels[self.classes].values
 
         train_x, valid_x, train_y, valid_y = train_test_split(
-            data_x, data_y, random_state = self.config['random_seed']
+            data_x, data_y, test_size=0.2, random_state = self.config['random_seed']
         )
-        
-        return data_x, data_y, train_x, train_y, valid_x, valid_y, test_x, test_y
-
-    def nn_vectorization(self, load_pretrained_embeddings_from_disk=False):
-        params = self.nn_params
-        train_x = self.df_train.comment_text.to_numpy()
-        test_x = self.df_test.comment_text.to_numpy()
 
         #definitions
         num_tokens = params['num_tokens']
@@ -77,6 +97,9 @@ class Preprocessor:
         train_x_tokenized = tokenizer.texts_to_sequences(train_x)
         train_x_pad = pad_sequences(train_x_tokenized, maxlen=maxlen)
         
+        valid_x_tokenized = tokenizer.texts_to_sequences(valid_x)
+        valid_x_pad = pad_sequences(valid_x_tokenized, maxlen=maxlen)
+
         test_x_tokenized = tokenizer.texts_to_sequences(test_x)
         test_x_pad = pad_sequences(test_x_tokenized, maxlen=maxlen)
 
@@ -98,15 +121,26 @@ class Preprocessor:
             self.embedding_matrix = np.zeros((self.vocab_size, params['embedding_dim']))
             print("\ncreating an embedding_matrix of shape =\n", self.embedding_matrix.shape)
 
+            oov_words = []
+            count = 0
             for word, i in tokenizer.word_index.items():
                 if i >= self.vocab_size:
                     continue
+                count += 1
                 embedding_vector = embeddings_index.get(word)
                 if embedding_vector is not None:
                     self.embedding_matrix[i] = embedding_vector
+                else:
+                    oov_words.append(word)
             
+            with open('./data/oov_words_vocabsize{}'.format(self.vocab_size), 'w') as file_handler:
+                for item in oov_words:
+                    file_handler.write("{}\n".format(item))
+
+            print('V1--out of %d words in vocab, %d are missing from glove vocab\n' % (count, len(oov_words)))
+
             #save embedding matrix to file
             np.savetxt(filtered_embed_path, self.embedding_matrix, delimiter=",")
         
-        return train_x_pad, test_x_pad
+        return train_x_pad, train_y, valid_x_pad, valid_y, test_x_pad, test_y
 
