@@ -9,7 +9,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 from module.embedding import load_pretrained_embeddings
-from module.contractions import contractions_list
+from module.contractions import contractions_list, expand_contractions
 
 class Preprocessor:
     def __init__(self, config, logger) -> None:
@@ -46,27 +46,13 @@ class Preprocessor:
         test_x = self.df_test.comment_text.to_numpy()
         
         print('\npreprocessing inputs:\n')
-        data_x = self.expand_contractions(data_x)
-        test_x = self.expand_contractions(test_x)
+        data_x = expand_contractions(data_x)
+        test_x = expand_contractions(test_x)
 
         train_x, train_y, valid_x, valid_y, test_x, test_y = self.nn_vectorization(data_x, test_x, 
             load_pretrained_embeddings_from_disk=load_pretrained_embeddings_from_disk
         )        
         return train_x, train_y, valid_x, valid_y, test_x, test_y
-
-    def expand_contractions(self, data_x):
-        contractions = contractions_list()
-
-        #firstly expand specific contractions
-        specific_contractions = contractions['specific']
-        pattern = re.compile('|'.join(specific_contractions.keys()))
-        result = [pattern.sub(lambda x: specific_contractions[x.group()], comment) for comment in data_x]
-
-        #secondly expand general contractions
-        general_contractions = contractions['general']
-        pattern = re.compile('|'.join(general_contractions.keys()))
-        result = [pattern.sub(lambda x: general_contractions[x.group()], comment) for comment in result]
-        return result
 
     def nn_vectorization(self, data_x, test_x, load_pretrained_embeddings_from_disk=False):
         params = self.nn_params

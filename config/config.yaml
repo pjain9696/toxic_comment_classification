@@ -10,7 +10,7 @@ preprocessing:
   dir_traindata: ./data/train.csv
   dir_testlabels: ./data/test_labels.csv
   dir_tokenizer: ./data/tokenizer.json
-  load_pretrained_embeddings_from_disk: False
+  load_pretrained_embeddings_from_disk: True
   random_seed: 42
 nn_params:
   model_name: 'gru'
@@ -21,3 +21,6 @@ nn_params:
     file_path: ./data/glove.840B.300d.txt
   sentence_maxlen: 200
   num_tokens: 20000
+app:
+  dir_tokenizer: ./data/tokenizer_vocabsize20000_v1.json #GRU_v1 with train_size=127656
+  dir_final_model: ./data/model_final_v1.h5

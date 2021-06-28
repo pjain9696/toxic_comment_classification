@@ -1,3 +1,5 @@
+import re
+
 def contractions_list():
     contractions = {
         "general": {
@@ -34,3 +36,17 @@ def contractions_list():
         }
     }
     return contractions
+
+def expand_contractions(data_x):
+    contractions = contractions_list()
+
+    #firstly expand specific contractions
+    specific_contractions = contractions['specific']
+    pattern = re.compile('|'.join(specific_contractions.keys()))
+    result = [pattern.sub(lambda x: specific_contractions[x.group()], comment) for comment in data_x]
+
+    #secondly expand general contractions
+    general_contractions = contractions['general']
+    pattern = re.compile('|'.join(general_contractions.keys()))
+    result = [pattern.sub(lambda x: general_contractions[x.group()], comment) for comment in result]
+    return result
