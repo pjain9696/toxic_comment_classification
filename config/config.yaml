@@ -19,5 +19,5 @@ nn_params:
   pretrained_embedding: 
     name: glove-840b-300d
     file_path: ./data/glove.840B.300d.txt
-  sentence_maxlen: 300
-  num_tokens: 30000
+  sentence_maxlen: 200
+  num_tokens: 20000
