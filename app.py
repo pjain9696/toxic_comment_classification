@@ -51,7 +51,7 @@ def predict():
         prediction_text='Your comment has following toxictity score for each category (close to 1 means more toxic): {}'.format(output)
     )
 
-if __name__ == "__name__":
+if __name__ == "__main__":
     app.run()
 
-app.run(port=5000)
+# app.run(port=5000)
