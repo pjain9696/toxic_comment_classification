@@ -1,7 +1,7 @@
-numpy==1.19.2
-tqdm==4.61.1
 pandas==1.2.5
-Flask==2.0.1
-tensorflow==2.5.0
+numpy==1.19.2
+tensorflow-cpu==2.5.0
+Flask==1.0.3
+tqdm==4.61.1
 PyYAML==5.4.1
-scikit_learn==0.24.2
+scikit_learn==0.22.1
