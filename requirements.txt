@@ -5,3 +5,4 @@ Flask==1.0.3
 tqdm==4.61.1
 PyYAML==5.4.1
 scikit_learn==0.22.1
+gunicorn==19.9.0
